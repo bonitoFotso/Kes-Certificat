@@ -114,7 +114,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-500 dark:text-gray-400">
-                © {new Date().getFullYear()} KES DOC_GEN. Tous droits réservés.
+                © {new Date().getFullYear()} KES ATTEST EASY. Bonito Fotso.
               </div>
               
               <div className="flex items-center space-x-4">
