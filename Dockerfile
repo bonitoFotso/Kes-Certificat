@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Installer les dépendances
 COPY package.json package-lock.json* ./
-RUN npm ci
+#RUN npm ci
 
 # Copier le reste des fichiers
 COPY . .
@@ -14,4 +14,4 @@ COPY . .
 EXPOSE 3000
 
 # Démarrer l'application en mode développement
-CMD ["npm", "run", "host"]
+CMD ["npm", "run", "host", "--", "--port", "3080"]

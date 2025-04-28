@@ -5,9 +5,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: react-typescript-app
+    container_name: attest_easy_front
     ports:
-      - "3000:3000"
+      - "3080:3080"
     volumes:
       - ./src:/app/src
       - ./public:/app/public
