@@ -14,5 +14,5 @@ services:
     environment:
       - NODE_ENV=development
       - VITE_API_URL=http://192.168.0.129:8080/api/
-      # Vous pouvez ajouter d'autres variables d'environnement icik
+      # Vous pouvez ajouter d'autres variables d'environnement ici
     restart: unless-stopped
