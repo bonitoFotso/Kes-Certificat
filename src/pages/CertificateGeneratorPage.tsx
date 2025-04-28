@@ -11,7 +11,6 @@ import HelpPanel from '@/components/layout/HelpPanel';
 import CertificateMode from '@/components/certificates/CertificateMode';
 import {cn} from '@/lib/utils';
 import { AlertCircle, CheckCircle, X } from 'lucide-react';
-import PhotoZipUploader from './PhotoZipUploader';
 
 /**
  * Page principale du générateur de certificats
@@ -133,7 +132,6 @@ export const CertificateGeneratorPage: React.FC = () => {
         )}
         
         <div className="bg-white rounded-xl shadow-lg p-8">
-          <PhotoZipUploader/>
           <CertificateMode mode={mode} setMode={setMode} />
           
           <div className="mt-8 border-t border-gray-200 pt-8">

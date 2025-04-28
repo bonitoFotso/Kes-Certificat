@@ -1,22 +1,17 @@
 // src/components/layout/AppSidebar.tsx
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  Building2, 
-  Users, 
-  MapPin, 
-  Package, 
-  FileText, 
-  GraduationCap,
+import {
+  MapPin,
+  FileText,
   Home,
-  HandCoins,
   ChevronDown,
   ChevronRight,
   Settings,
   HelpCircle,
   LayoutDashboard,
-  Contact2 as Contact2Icon,
-  X
+  X,
+  Zap
 } from 'lucide-react';
 import {cn} from '@/lib/utils';
 
@@ -24,7 +19,7 @@ import {cn} from '@/lib/utils';
 interface NavItemBase {
   name: string;
   icon: React.ElementType;
-  category: 'main' | 'business' | 'footer';
+  category: 'main' | 'habilitation' | 'footer';
 }
 
 interface NavItemWithHref extends NavItemBase {
@@ -63,25 +58,10 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
   const navigation: NavItem[] = [
     // Navigation principale
     { name: 'Dashboard', href: '/', icon: LayoutDashboard, category: 'main' },
-    { name: 'Photo', href: '/photo', icon: Building2, category: 'main' },
-    { name: 'Contacts', href: '/contacts', icon: Contact2Icon, category: 'main'},
-    { name: 'Clients', href: '/clients', icon: Users, category: 'main' },
-    { name: 'Sites', href: '/sites', icon: MapPin, category: 'main' },
-
-    // Opérations commerciales
-    { 
-      name: 'Commercial',
-      icon: HandCoins,
-      category: 'business',
-      children: [
-        { name: 'Offres', href: '/offres', icon: FileText },
-        { name: 'Affaires', href: '/affaires', icon: FileText },
-        { name: 'Proformas', href: '/proformas', icon: FileText },
-      ]
-    },
-    { name: 'Produits', href: '/products', icon: Package, category: 'business' },
-    { name: 'Formations', href: '/formations', icon: GraduationCap, category: 'business' },
-    { name: 'Rapports', href: '/reports', icon: FileText, category: 'business' },
+    { name: 'Photo', href: '/photo', icon: FileText, category: 'main' }, // Changed to FileText for document-like content
+    { name: 'Photo Uploader', href: '/photoUploader', icon: FileText, category: 'main' },
+    { name: 'Electrique', href: '/electrique', icon: Zap, category: 'habilitation' }, // Zap is perfect for electrical
+    { name: 'Hauteur', href: '/hauteur', icon: MapPin, category: 'habilitation' }, // Changed to MapPin for height/location work
   ];
 
   // Navigation du pied de page
@@ -246,14 +226,11 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
         "flex-1 space-y-6 px-3 py-4",
         "overflow-y-auto scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent"
       )}>
-        <NavSection 
+        <NavSection
           items={navigation.filter(item => item.category === 'main')} 
-          title="Principal" 
+          title="Principal"
         />
-        <NavSection 
-          items={navigation.filter(item => item.category === 'business')} 
-          title="Opérations" 
-        />
+
       </nav>
 
       {/* Pied de page */}
