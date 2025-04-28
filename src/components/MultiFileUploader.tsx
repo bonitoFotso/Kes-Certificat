@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Upload, Trash2, FileSpreadsheet, CheckCircle, XCircle, Loader2, AlertCircle } from 'lucide-react';
-import type { ExcelData } from '../types';
+import { ExcelData } from '@/types/certificate';
 
 interface FileStatus {
   file: File;
@@ -56,9 +56,9 @@ export function MultiFileUploader() {
 
         try {
           const formData = new FormData();
-          formData.append('excel_file', files[i].file);
+          formData.append('file', files[i].file);
           
-          const response = await fetch('http://192.168.1.160:8002/api/certificat/', {
+          const response = await fetch('http://192.168.100.188:8889/api/generate-habilitation/', {
             method: 'POST',
             body: formData,
           });

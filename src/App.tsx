@@ -1,138 +1,102 @@
-import { FileUploader } from './components/FileUploader';
-import { DataPreview } from './components/DataPreview';
-import { MultiFileUploader } from './components/MultiFileUploader';
-import type { ExcelData } from './types';
-import { FileSpreadsheet, Files, HelpCircle } from 'lucide-react';
-import { useState } from 'react';
+// src/App.tsx
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AppLayout } from './components/layout/AppLayout';
+import { CertificateGeneratorPage } from './pages/CertificateGeneratorPage';
+import { ThemeProvider } from './context/ThemeContext';
+import { Toaster } from './components/ui/Toaster';
+import ErrorBoundary from './components/common/ErrorBoundary';
+import UploadComponent from './pages/UploadComponent';
+import ExcelPhotoUploader from './pages/ExcelPhotoUploader';
 
-function App() {
-  const [mode, setMode] = useState<'single' | 'multi'>('single');
-  const [excelData, setExcelData] = useState<ExcelData | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
-
-  const handleFileLoad = (data: ExcelData, file: File) => {
-    setExcelData(data);
-    setSelectedFile(file);
-  };
-
-  const handleValidate = async () => {
-    if (!selectedFile) return;
-    
-    try {
-      setIsLoading(true);
-      
-      const formData = new FormData();
-      formData.append('excel_file', selectedFile);
-      
-      const response = await fetch('http://127.0.0.1:8001/api/certificat/', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Erreur lors de la génération des certificats');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `certificats-${selectedFile.name.split('.')[0]}.zip`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      
-    } catch (error) {
-      console.error('Erreur:', error);
-      alert('Une erreur est survenue lors de la génération des certificats.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+/**
+ * Point d'entrée principal de l'application
+ */
+export function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <FileSpreadsheet className="w-8 h-8 text-blue-600" />
-              <h1 className="text-xl font-semibold text-gray-900">
-                Générateur de Certificats
-              </h1>
-            </div>
-            <button
-              onClick={() => setShowHelp(!showHelp)}
-              className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
-              aria-label="Aide"
-            >
-              <HelpCircle className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {showHelp && (
-          <div className="mb-8 bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Comment utiliser l'application ?</h2>
-            <div className="space-y-3 text-gray-600">
-              <p><strong>Mode fichier unique :</strong> Idéal pour traiter un seul fichier Excel. Vous pourrez prévisualiser les données avant de générer les certificats.</p>
-              <p><strong>Mode multi-fichiers :</strong> Permet de traiter plusieurs fichiers Excel en une fois. Chaque fichier sera traité séquentiellement.</p>
-              <p><strong>Format accepté :</strong> Fichiers Excel (.xlsx, .xls)</p>
-            </div>
-          </div>
-        )}
-
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-1">
-              <button
-                onClick={() => setMode('single')}
-                className={`inline-flex items-center gap-2 rounded-md px-6 py-3 text-sm font-medium transition-all duration-200 ${
-                  mode === 'single'
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                <FileSpreadsheet className="w-4 h-4" />
-                Fichier unique
-              </button>
-              <button
-                onClick={() => setMode('multi')}
-                className={`inline-flex items-center gap-2 rounded-md px-6 py-3 text-sm font-medium transition-all duration-200 ${
-                  mode === 'multi'
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                <Files className="w-4 h-4" />
-                Plusieurs fichiers
-              </button>
-            </div>
-          </div>
-
-          {mode === 'single' ? (
-            <>
-              <FileUploader onFileLoad={handleFileLoad} />
-              {excelData && selectedFile && (
-                <DataPreview 
-                  data={excelData} 
-                  onValidate={handleValidate}
-                  isLoading={isLoading}
-                />
-              )}
-            </>
-          ) : (
-            <MultiFileUploader />
-          )}
-        </div>
-      </main>
-    </div>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <Router>
+          <Routes>
+            {/* Routes dans la mise en page principale */}
+            <Route path="/" element={<AppLayout />}>
+              <Route index element={<CertificateGeneratorPage />} />
+              <Route path="certificates" element={<CertificateGeneratorPage />} />
+              
+              {/* Pages futures */}
+              <Route path="entities" element={<UploadComponent/>} />
+              <Route path="photo" element={<ExcelPhotoUploader/>} />
+              <Route path="clients" element={<ComingSoonPage title="Clients" />} />
+              <Route path="sites" element={<ComingSoonPage title="Sites" />} />
+              <Route path="products" element={<ComingSoonPage title="Produits" />} />
+              <Route path="formations" element={<ComingSoonPage title="Formations" />} />
+              <Route path="reports" element={<ComingSoonPage title="Rapports" />} />
+              <Route path="offres" element={<ComingSoonPage title="Offres" />} />
+              <Route path="affaires" element={<ComingSoonPage title="Affaires" />} />
+              <Route path="proformas" element={<ComingSoonPage title="Proformas" />} />
+              
+              {/* Pages utilitaires */}
+              <Route path="help" element={<HelpPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+              
+              {/* Route par défaut */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Route>
+          </Routes>
+        </Router>
+        <Toaster />
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
+
+/**
+ * Page temporaire pour les fonctionnalités à venir
+ */
+const ComingSoonPage: React.FC<{ title: string }> = ({ title }) => {
+  return (
+    <div className="flex flex-col items-center justify-center h-96">
+      <h1 className="text-3xl font-bold text-gray-800 mb-4">{title}</h1>
+      <p className="text-gray-600 text-center max-w-md">
+        Cette fonctionnalité est en cours de développement et sera disponible prochainement.
+      </p>
+    </div>
+  );
+};
+
+/**
+ * Page d'aide complète
+ */
+const HelpPage: React.FC = () => {
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold text-gray-800">Centre d'aide</h1>
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Documentation</h2>
+        <p className="text-gray-600">
+          Consultez notre documentation complète pour apprendre à utiliser toutes les fonctionnalités 
+          du générateur de certificats.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Page de paramètres
+ */
+const SettingsPage: React.FC = () => {
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold text-gray-800">Paramètres</h1>
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Préférences utilisateur</h2>
+        <p className="text-gray-600">
+          Configurez vos préférences pour personnaliser votre expérience.
+        </p>
+      </div>
+    </div>
+  );
+};
 
 export default App;
